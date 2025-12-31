@@ -18,11 +18,11 @@ export default function TaskForm({ task = null, onSuccess, onCancel }) {
   const [formData, setFormData] = useState({
     task_description: task?.task_description || '',
     task_details: task?.task_details || '',
-    assigned_to: task?.assigned_to || '',
+    assigned_to: task?.assigned_to || null,
     status: task?.status || 'todo',
     priority: task?.priority || 'medium',
     due_date: task?.due_date || '',
-    associated_milestone_id: task?.associated_milestone_id || ''
+    associated_milestone_id: task?.associated_milestone_id || null
   });
   const [milestones, setMilestones] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -53,10 +53,16 @@ export default function TaskForm({ task = null, onSuccess, onCancel }) {
       const url = task ? `/api/tasks/${task.task_id}` : '/api/tasks';
       const method = task ? 'PUT' : 'POST';
 
+      const submitData = {
+        ...formData,
+        associated_milestone_id: formData.associated_milestone_id || null,
+        assigned_to: formData.assigned_to || null
+      };
+
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submitData),
       });
 
       const data = await response.json();
@@ -136,7 +142,7 @@ export default function TaskForm({ task = null, onSuccess, onCancel }) {
             disabled={loading}
           >
             <SelectTrigger>
-              <SelectValue />
+              <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
               {STATUSES.map(status => (
@@ -156,7 +162,7 @@ export default function TaskForm({ task = null, onSuccess, onCancel }) {
             disabled={loading}
           >
             <SelectTrigger>
-              <SelectValue />
+              <SelectValue placeholder="Select priority" />
             </SelectTrigger>
             <SelectContent>
               {PRIORITIES.map(priority => (
@@ -183,7 +189,7 @@ export default function TaskForm({ task = null, onSuccess, onCancel }) {
       <div className="space-y-2">
         <Label htmlFor="milestone">Associated Milestone (Optional)</Label>
         <Select
-          value={formData.associated_milestone_id}
+          value={formData.associated_milestone_id || undefined}
           onValueChange={(value) => setFormData({ ...formData, associated_milestone_id: value })}
           disabled={loading}
         >
@@ -191,7 +197,6 @@ export default function TaskForm({ task = null, onSuccess, onCancel }) {
             <SelectValue placeholder="Select milestone" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">None</SelectItem>
             {milestones.map(milestone => (
               <SelectItem key={milestone.milestone_id} value={milestone.milestone_id}>
                 {milestone.milestone_name}
