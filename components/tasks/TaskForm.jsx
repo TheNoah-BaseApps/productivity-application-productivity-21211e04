@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,8 +14,7 @@ import UserSelector from '@/components/ui/UserSelector';
 const STATUSES = ['todo', 'in_progress', 'completed', 'blocked'];
 const PRIORITIES = ['low', 'medium', 'high', 'urgent'];
 
-export default function TaskForm({ task = null }) {
-  const router = useRouter();
+export default function TaskForm({ task = null, onSuccess, onCancel }) {
   const [formData, setFormData] = useState({
     task_description: task?.task_description || '',
     task_details: task?.task_details || '',
@@ -68,13 +66,22 @@ export default function TaskForm({ task = null }) {
       }
 
       toast.success(`Task ${task ? 'updated' : 'created'} successfully!`);
-      router.push('/tasks');
+      
+      if (onSuccess) {
+        onSuccess(data);
+      }
     } catch (err) {
       console.error('Task form error:', err);
       setError(err.message);
       toast.error(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel();
     }
   };
 
@@ -205,7 +212,7 @@ export default function TaskForm({ task = null }) {
             task ? 'Update Task' : 'Create Task'
           )}
         </Button>
-        <Button type="button" variant="outline" onClick={() => router.back()} disabled={loading}>
+        <Button type="button" variant="outline" onClick={handleCancel} disabled={loading}>
           Cancel
         </Button>
       </div>

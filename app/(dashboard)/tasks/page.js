@@ -12,6 +12,10 @@ export default function TasksPage() {
   const router = useRouter();
   const [view, setView] = useState('list');
 
+  const handleNewTask = () => {
+    router.push('/tasks/new');
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -32,7 +36,7 @@ export default function TasksPage() {
               </TabsTrigger>
             </TabsList>
           </Tabs>
-          <Button onClick={() => router.push('/tasks/new')}>
+          <Button onClick={handleNewTask}>
             <Plus className="mr-2 h-4 w-4" />
             New Task
           </Button>
