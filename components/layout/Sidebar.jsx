@@ -11,7 +11,9 @@ import {
   Target, 
   BarChart3, 
   User,
-  ClipboardCheck
+  ClipboardCheck,
+  Video,
+  FileText
 } from 'lucide-react';
 
 const navigation = [
@@ -20,6 +22,8 @@ const navigation = [
   { name: 'Leave Approvals', href: '/leaves/approvals', icon: ClipboardCheck, roles: ['admin', 'manager'] },
   { name: 'Tasks', href: '/tasks', icon: CheckSquare },
   { name: 'Milestones', href: '/milestones', icon: Target },
+  { name: 'Meeting Recordings', href: '/meeting-recordings', icon: Video },
+  { name: 'Product Requirements', href: '/product-requirements', icon: FileText },
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
   { name: 'Profile', href: '/profile', icon: User },
 ];
